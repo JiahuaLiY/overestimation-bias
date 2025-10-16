@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 # if TYPE_CHECKING:
-#     import gymnasium as gym
+import gymnasium as gym
 
 import numpy as np
 import torch as th
@@ -17,7 +17,7 @@ class QValuesCallback(BaseCallback):
                  mcSeeds: int,
                  T: int,
                  gamma: float,
-                 mcEnv,
+                 mcEnv: gym.Env,
                  verbose = 0):
         super().__init__(verbose)
 
@@ -50,17 +50,43 @@ class QValuesCallback(BaseCallback):
         self.qValues.append(float(qs[0].mean().detach()))
     
     def _sampleQValuesMC(self) -> None:
-        states = self._samplingStates(self.nbEpisodes)
-        seeds = self.mcSeeds
-        env = self.mcEnv
-        qs = []
-        for state in states:
-            totalReward = 0.
-            for seed in seeds:
-                env.reset(seed=seed)
+        # states = self._samplingStates(self.nbEpisodes)
+        # seeds = self.mcSeeds
+        # env = self.mcEnv
+        # qs = []
+        # for state in states:
+        #     totalReward = 0.
+        #     for seed in seeds:
+        #         env.reset(seed=seed)
 
+        #         terminated = truncated = False
+        #         s = th.tensor(state).unsqueeze(0).float()
+
+        #         niter = 0
+        #         factor = 1.
+        #         reward = 0.
+
+        #         while not (terminated or truncated) and niter < self.T:
+        #             act = self.model.actor(s).detach().numpy()[0]
+        #             s, r, terminated, truncated, _ = env.step(act)
+        #             s = th.tensor(s).unsqueeze(0).float()
+
+        #             reward += r * factor
+        #             factor *= self.gamma
+        #             niter += 1
+
+        #         totalReward += reward
+        #     qs.append(totalReward / len(seeds))
+        # self.qValuesMC.append(np.mean(qs))
+        env = self.mcEnv
+        seeds = self.mcSeeds
+        qs = []
+        for seed in self.mcSeeds:
+            totalReward = 0.
+            for _ in range(self.nbEpisodes):
+                s, _ = env.reset(seed=seed)
                 terminated = truncated = False
-                s = th.tensor(state).unsqueeze(0).float()
+                s = th.tensor(s).unsqueeze(0).float()
 
                 niter = 0
                 factor = 1.
@@ -78,6 +104,8 @@ class QValuesCallback(BaseCallback):
                 totalReward += reward
             qs.append(totalReward / len(seeds))
         self.qValuesMC.append(np.mean(qs))
+
+            
     
     def _on_step(self):
         if self.niter % self.samplingFreq != 0:

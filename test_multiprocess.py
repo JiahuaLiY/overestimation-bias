@@ -22,14 +22,14 @@ ENV_KWARGS = dict(
     turbulence_power=1.5,
 )
 
-TOTAL_TIMESTEPS = 700_001
+TOTAL_TIMESTEPS = 400_001
 SAMPLING_FREQ = 2_000
 SAMPLING_SIZE = 800
 
 ENV_SEED = 123
-MC_SEEDS = [883, 368, 45, 747, 373, 523, 103, 705, 224, 424]
+MC_SEEDS = [383, 778, 618, 643, 762, 654, 770, 137, 972, 513, 518, 1017, 975, 923, 362, 178, 383, 591, 7, 64, 632, 850, 695, 33, 770] # 25 seeds
 SEEDS = [614, 794, 444, 154, 433, 868, 525, 888]  # 8 seeds
-NB_EPISODES = 25
+NB_EPISODES = 10
 
 ALGOS: Dict[str, Type[DDPG] | Type[TD3]] = {
     "DDPG": DDPG,
@@ -73,7 +73,6 @@ def train_one(algo_name: str, seed: int) -> Tuple[str, int, np.ndarray, np.ndarr
         buffer_size=200_000,
         learning_starts=10_000,
         gamma=0.98,
-        n_steps=1,
         seed=seed,
         policy_kwargs=dict(net_arch=[400, 300]),
     )
