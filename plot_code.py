@@ -51,17 +51,17 @@ def plot_curves_with_mc(file_name : str):
 
     plt.xlabel("Timesteps")
     plt.ylabel("Q-value / MC (mean over seeds)")
-    plt.title(f"LunarLander-v3 — Q vs MC over {len(SEEDS)} seeds")
+    # plt.title(f"LunarLander-v3 — Q vs MC over {len(SEEDS)} seeds")
     plt.legend()
     plt.tight_layout()
     # name = file_name.split(".")[0]
-    # plt.savefig(f"{name}.png", dpi=150)
+    plt.savefig("estimation.png", dpi=150)
     plt.show()
 
 
 if __name__ == "__main__":
-    plot_curves_without_mc("qvalues_10seeds.csv")
-    plot_curves_without_mc("qvalues_8seeds_70w.csv")
-    plot_curves_with_mc("qvalues_8seeds_30w.csv")
-    plot_curves_with_mc("qvalues_8seeds_70w.csv")
-
+    # plot_curves_without_mc("qvalues_10seeds.csv")
+    # plot_curves_without_mc("qvalues_8seeds_70w.csv")
+    # plot_curves_with_mc("qvalues_8seeds_30w.csv")
+    # plot_curves_with_mc("qvalues_8seeds_70w.csv")
+    plot_curves_with_mc("qvalues_8seeds.csv")
