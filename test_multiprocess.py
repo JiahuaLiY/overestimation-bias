@@ -22,14 +22,14 @@ ENV_KWARGS = dict(
     turbulence_power=1.5,
 )
 
-TOTAL_TIMESTEPS = 400_001
-SAMPLING_FREQ = 2_000
+TOTAL_TIMESTEPS = 700_001
+SAMPLING_FREQ = 5_000
 SAMPLING_SIZE = 800
 
 ENV_SEED = 123
 MC_SEEDS = [383, 778, 618, 643, 762, 654, 770, 137, 972, 513, 518, 1017, 975, 923, 362, 178, 383, 591, 7, 64, 632, 850, 695, 33, 770] # 25 seeds
 SEEDS = [614, 794, 444, 154, 433, 868, 525, 888]  # 8 seeds
-NB_EPISODES = 10
+NB_EPISODES = 20
 
 ALGOS: Dict[str, Type[DDPG] | Type[TD3]] = {
     "DDPG": DDPG,
@@ -83,7 +83,7 @@ def train_one(algo_name: str, seed: int) -> Tuple[str, int, np.ndarray, np.ndarr
         nbEpisodes=NB_EPISODES,
         mcSeeds=MC_SEEDS,
         gamma=0.98,
-        T=100,
+        T=200,
         mcEnv=mc_env
     )
 
@@ -137,12 +137,7 @@ def main():
     result = pd.concat(all_rows, ignore_index=True)
 
     csv_name = f"qvalues_{len(SEEDS)}seeds.csv"
-    pq_name  = f"qvalues_{len(SEEDS)}seeds.parquet"
     result.to_csv(csv_name, index=False)
-    try:
-        result.to_parquet(pq_name, index=False)
-    except Exception as e:
-        print("Parquet save failed (no engine installed?). CSV has been saved. Err:", e)
     print(f"Saved: {csv_name} (rows={len(result)})")
 
     pivot = result.pivot_table(index="step", columns=["algo", "seed"], values="q_mean")

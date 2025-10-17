@@ -102,7 +102,7 @@ class QValuesCallback(BaseCallback):
                     niter += 1
 
                 totalReward += reward
-            qs.append(totalReward / len(seeds))
+            qs.append(totalReward / self.nbEpisodes)
         self.qValuesMC.append(np.mean(qs))
 
             
